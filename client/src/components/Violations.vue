@@ -4,6 +4,13 @@
       <template slot="lead">
         Сумарна кількість правопорушень: <b-badge variant="primary">{{ violationsCount }}</b-badge>
       </template>
+        <b-alert :show="dismissCountDown"
+            dismissible
+            variant="success"
+            @dismissed="dismissCountDown=0"
+            @dismiss-count-down="countDownChanged">
+          {{ this.alertText }}
+        </b-alert>
           <b-row class="my-2">
             <b-col md="3" class="my-1">
               <b-form-group horizontal label="Фільтр" class="mb-0 text-center">
@@ -395,9 +402,13 @@ export default {
         incomeDoc: '',
         publicId: '',
       },
+      showDismissibleAlert: false,
+      dismissSecs: 2,
+      dismissCountDown: 0,
+      alertText: '',
       fields: {
         index: { label: '№', sortable: true },
-        date: { label: 'Дата', sortable: true, thStyle: { minWidth: '100px' } },
+        date: { label: 'Дата', sortable: true, thStyle: { minWidth: '80px' } },
         whoFound: { label: 'Хто виявив', sortable: true },
         network: { label: 'Мережа', sortable: true },
         ipAdress: { label: 'IP-адреса' },
@@ -481,18 +492,21 @@ export default {
       };
       axios.post('http://localhost:5000/violation_new', newViolation, {
       });
-      this.clearModal();
-      this.hideAddModal();
       this.violations.push(newViolation);
       this.violationsCount++;
+      this.showAlert('Запис додано');
+      this.clearModal();
+      this.hideAddModal();
     },
     editViolation(publicId, violation) {
       const path = 'http://localhost:5000/violation_edit/' + publicId;
       axios.put(path, violation);
+      this.showAlert('Запис ' + publicId + ' було редаговано');
       this.hideEditModal();
     },
     removeViolation(publicId, violation) {
       const path = 'http://localhost:5000/violation_delete/' + publicId;
+      this.showAlert('Запис ' + publicId + ' видалено');
       axios.delete(path);
       this.hideEditModal();
       this.violations.pop(violation);
@@ -507,6 +521,13 @@ export default {
     },
     outputFileSelected(event) {
       this.outputFile = event.target.files[0];
+    },
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+    },
+    showAlert(text) {
+      this.alertText = text;
+      this.dismissCountDown = this.dismissSecs;
     },
   },
 };

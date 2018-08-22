@@ -484,6 +484,7 @@ export default {
       this.clearModal();
       this.hideAddModal();
       this.violations.push(newViolation);
+      this.violationsCount++;
     },
     editViolation(publicId, violation) {
       const path = 'http://localhost:5000/violation_edit/' + publicId;
@@ -495,6 +496,7 @@ export default {
       axios.delete(path);
       this.hideEditModal();
       this.violations.pop(violation);
+      this.violationsCount--;
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;

@@ -92,7 +92,7 @@ def all_violations():
 
     output = []
     for q in violations.find():
-        output.append({"public_id": q["public_id"], "index": q["index"], "date": q["date"], "whoFound": q["whoFound"], "network": q["network"],
+        output.append({"public_id": q["public_id"], "date": q["date"], "whoFound": q["whoFound"], "network": q["network"],
                        "ipAdress" : q["ipAdress"], "department" : q["department"], "militaryUnit" : q["militaryUnit"],
                        "deslocation" : q["deslocation"], "subordinate" : q["subordinate"], "normDoc" : q["normDoc"],
                        "violCont" : q["violCont"], "volumeInf" : q["volumeInf"], "sourceDoc" : q["sourceDoc"],
@@ -125,7 +125,6 @@ def edit_violation(data_index):
 
 @app.route('/violation_new', methods=['POST'])
 def add_violation():
-    index = mongo.db.violations.count() + 1
     date = request.json['date']
     whoFound = request.json['whoFound']
     network = request.json['network']
@@ -140,7 +139,7 @@ def add_violation():
     sourceDoc = request.json['sourceDoc']
     incomeDoc = request.json['incomeDoc']
 
-    violations_id = violations.insert_one({"public_id": str(uuid.uuid4()),"index": index, "date": date, "whoFound": whoFound, "network": network,
+    violations_id = violations.insert_one({"public_id": str(uuid.uuid4()), "date": date, "whoFound": whoFound, "network": network,
                                        "ipAdress" : ipAdress, "department" : department, "militaryUnit" : militaryUnit,
                                         "deslocation" : deslocation, "subordinate" : subordinate, "normDoc" : normDoc,
                                         "violCont" : violCont, "volumeInf" : volumeInf, "sourceDoc" : sourceDoc,

@@ -329,7 +329,7 @@
             @row-dblclicked="rowdClick">
             <template slot="index" slot-scope="row">
               <b-button size="sm" @click.stop="row.toggleDetails" class="mr-2" variant="primary">
-                {{ row.value }}
+                {{ row.index + 1}}
               </b-button>
             </template>
             <template slot="row-details" slot-scope="row">

@@ -6,7 +6,7 @@
       </template>
         <b-alert :show="dismissCountDown"
             dismissible
-            variant="success"
+            :variant="alertVariant"
             @dismissed="dismissCountDown=0"
             @dismiss-count-down="countDownChanged">
           {{ this.alertText }}
@@ -296,7 +296,7 @@
                   </b-col>
                 </b-row>
                 <b-row class="mb-4 text-center">
-                  <b-col sm="2">Вихід. файл ХХ</b-col>
+                  <b-col sm="2">Вихід. файл</b-col>
                   <b-col class="text-left" sm="6"><b-form-file v-model="outputFile"
                                                                ref="outF"
                                                                accept=".docx, .doc, .pdf"
@@ -400,11 +400,12 @@ export default {
         volumeInf: '',
         sourceDoc: '',
         incomeDoc: '',
-        publicId: '',
+        public_id: '',
       },
       showDismissibleAlert: false,
       dismissSecs: 2,
       dismissCountDown: 0,
+      alertVariant: '',
       alertText: '',
       fields: {
         index: { label: '№', sortable: true },
@@ -439,7 +440,7 @@ export default {
   },
   methods: {
     getViolations() {
-      const path = 'http://localhost:5000/violations';
+      const path = 'http://192.168.0.104:5000/violations';
       axios.get(path)
         .then((response) => {
           this.violations = response.data.data;
@@ -490,27 +491,27 @@ export default {
         sourceDoc: this.violation.sourceDoc,
         incomeDoc: this.violation.incomeDoc,
       };
-      axios.post('http://localhost:5000/violation_new', newViolation, {
+      axios.post('http://192.168.0.104:5000/violation_new', newViolation, {
       });
       this.violations.push(newViolation);
-      this.violationsCount++;
-      this.showAlert('Запис додано');
+      this.violationsCount += 1;
+      this.showAlert('Запис додано', 'success');
       this.clearModal();
       this.hideAddModal();
     },
     editViolation(publicId, violation) {
-      const path = 'http://localhost:5000/violation_edit/' + publicId;
+      const path = 'http://192.168.0.104:5000/violation_edit/' + publicId;
       axios.put(path, violation);
-      this.showAlert('Запис ' + publicId + ' було редаговано');
+      this.showAlert('Запис ' + publicId + ' було редаговано', 'warning');
       this.hideEditModal();
     },
     removeViolation(publicId, violation) {
-      const path = 'http://localhost:5000/violation_delete/' + publicId;
-      this.showAlert('Запис ' + publicId + ' видалено');
+      const path = 'http://192.168.0.104:5000/violation_delete/' + publicId;
+      this.showAlert('Запис ' + publicId + ' видалено', 'danger');
       axios.delete(path);
       this.hideEditModal();
       this.violations.pop(violation);
-      this.violationsCount--;
+      this.violationsCount -= 1;
     },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
@@ -525,7 +526,8 @@ export default {
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
     },
-    showAlert(text) {
+    showAlert(text, variant) {
+      this.alertVariant = variant;
       this.alertText = text;
       this.dismissCountDown = this.dismissSecs;
     },

@@ -139,12 +139,15 @@ def add_violation():
     sourceDoc = request.json['sourceDoc']
     incomeDoc = request.json['incomeDoc']
 
-    violations_id = violations.insert_one({"public_id": str(uuid.uuid4()), "date": date, "whoFound": whoFound, "network": network,
-                                       "ipAdress" : ipAdress, "department" : department, "militaryUnit" : militaryUnit,
-                                        "deslocation" : deslocation, "subordinate" : subordinate, "normDoc" : normDoc,
-                                        "violCont" : violCont, "volumeInf" : volumeInf, "sourceDoc" : sourceDoc,
-                                        "incomeDoc" : incomeDoc})
+    id = str(uuid.uuid4())
+
+    violations.insert_one({"public_id": id, "date": date, "whoFound": whoFound, "network": network,
+                "ipAdress" : ipAdress, "department" : department, "militaryUnit" : militaryUnit,
+                "deslocation" : deslocation, "subordinate" : subordinate, "normDoc" : normDoc,
+                "violCont" : violCont, "volumeInf" : volumeInf, "sourceDoc" : sourceDoc,
+                "incomeDoc" : incomeDoc})
 
     return jsonify({'message' : 'violation was added'})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
